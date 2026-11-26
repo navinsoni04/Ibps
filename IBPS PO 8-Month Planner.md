@@ -1,3 +1,3 @@
 # IBPS PO 8-Month Planner
 
-Serious aspirants ke liye default daily target: Quant, Reasoning, English, GA/Banking, Calculation + Mock schedule
+Official IBPS PO syllabus + PYQ difficulty ke hisaab se 240 din ka plan. Har topic 25 baar recall + revise, PYQ papers aur mock schedule ke saath.
