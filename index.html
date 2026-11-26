@@ -12,8 +12,8 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-app
 h1{font-size:19px;margin:4px 0 2px}h2{font-size:16px;margin:0 0 8px}
 .sub{color:var(--mu);font-size:13px;margin-bottom:10px}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
-.tabs{display:flex;gap:6px;margin-bottom:10px}
-.tabs button{flex:1;padding:9px 2px;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tabs button{flex:1 1 13%;min-width:70px;padding:9px 2px;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600}
 .tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 label{display:block;font-size:13px;color:var(--mu);margin:8px 0 3px}
 input,select,button{font:inherit}
@@ -39,8 +39,8 @@ details summary{font-weight:600;cursor:pointer;padding:4px 0}
 </head>
 <body>
 <h1>IBPS PO 8-Month Planner</h1>
-<div class="sub">Serious aspirants ke liye default daily target: Quant, Reasoning, English, GA/Banking, Calculation + Mock schedule</div>
-<div class="tabs"><button id="t0" class="on">Aaj</button><button id="t1">Plan</button><button id="t2">Progress</button><button id="t4">Log</button><button id="t5">Mentor</button><button id="t3">Setup</button></div>
+<div class="sub">Official IBPS PO syllabus + PYQ difficulty ke hisaab se 240 din ka plan. Har topic 25 baar recall + revise, PYQ papers aur mock schedule ke saath.</div>
+<div class="tabs"><button id="t0" class="on">Aaj</button><button id="t1">Plan</button><button id="t6">Syllabus</button><button id="t2">Progress</button><button id="t4">Log</button><button id="t5">Mentor</button><button id="t3">Setup</button></div>
 <div id="toast"></div><div id="v"></div>
 
 <script>
@@ -49,29 +49,63 @@ var S={start:'',hours:8,weak:[],done:{},mocks:[],errs:[],dbt:[]};
 try{var x=localStorage.getItem('ibpsplan');if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
 function save(){try{localStorage.setItem('ibpsplan',JSON.stringify(S))}catch(e){}}
 var NM={q:'Quant',r:'Reasoning',e:'English',g:'GA / Banking',c:'Calculation'};
-var TP={
-q:['Simplification and Approximation','Number Series','Percentage','Ratio and Proportion','Average','Profit and Loss','Simple and Compound Interest','Time and Work','Time Speed Distance','Boats and Streams','Mixture and Alligation','Ages','Partnership','Quadratic Equations','Permutation and Combination','Probability','Mensuration','Data Sufficiency','Table DI','Bar and Line DI','Pie Chart DI','Caselet DI','Missing and Radar DI','Arithmetic mixed set'],
-r:['Coding-Decoding','Inequality','Syllogism','Blood Relations','Direction Sense','Order and Ranking','Linear Seating','Circular Seating','Square and Box Puzzle','Floor and Scheduling Puzzle','Comparison and Month Puzzle','Input-Output','Data Sufficiency','Alphanumeric Series','Statement-Assumption','Course of Action','Strengthen-Weaken','Computer Aptitude basics'],
-e:['Reading Comprehension','Cloze Test','Error Spotting','Sentence Improvement','Para Jumbles','Fill in the Blanks','Vocabulary: Synonyms-Antonyms','Idioms and Phrases','Phrase Replacement','Sentence Connectors','Word Swap','Grammar rules revision'],
-g:['Banking: RBI and Monetary Policy','Economy basics and Budget','Current Affairs: last 15 days','Static GK: Banks and HQs','Financial Awareness: Schemes','Awards, Sports, Summits','Banking terms and Abbreviations','Govt Schemes and Reports','Current Affairs: monthly revision']
-};
 var CALC=['Tables 2-30 + squares to 30','Cubes to 20 + square roots','Fractions to percent (1/2 to 1/20)','Multiplication tricks (2-digit x 2-digit)','Approximation drill: 15 Qs in 8 min','Simplification speed: 20 Qs in 10 min','Percent and ratio shortcuts'];
 var SPL=[{q:.30,r:.25,e:.18,g:.15,c:.12},{q:.30,r:.26,e:.15,g:.15,c:.14},{q:.30,r:.28,e:.15,g:.12,c:.15},{q:.28,r:.28,e:.14,g:.15,c:.15},{q:.28,r:.27,e:.15,g:.15,c:.15}];
-var PH=[{n:'Phase 1: Foundation',a:1,b:90,d:'Concept + basic practice. Har topic seekho, 25 questions.'},
+var PH=[{n:'Phase 1: Foundation',a:1,b:90,d:'Official syllabus ka har topic: concept, 30 Qs practice aur us topic ke PYQs. Mushkil aur zyada pooche jaane wale topics ko zyada din.'},
 {n:'Phase 2: Practice + Speed',a:91,b:150,d:'Timed practice, sectional tests, weekly full Prelims mock.'},
 {n:'Phase 3: Prelims Sprint',a:151,b:180,d:'Prelims mocks 4 din/week, analysis, speed + accuracy.'},
 {n:'Phase 4: Mains Sprint',a:181,b:210,d:'Mains level (High-level DI, Puzzles), Descriptive writing.'},
 {n:'Phase 5: Final Revision',a:211,b:240,d:'Daily full mocks, revision, Descriptive + Interview prep.'}];
+// Official IBPS PO syllabus topics. f = PYQ frequency (3 High, 2 Medium, 1 Low), l = difficulty in PYQs (1 Easy, 2 Moderate, 3 Hard), x = exam stage (P Prelims, M Mains, B dono), q = PYQ trend
+var SY={
+q:[['Simplification and Approximation',3,1,'P','Prelims: 5-10 Qs har saal'],['Number Series (missing + wrong)',3,2,'B','Prelims: 5 Qs, Mains mein kabhi-kabhi'],['Percentage',3,1,'B','Har DI aur arithmetic ka base'],['Ratio and Proportion',2,1,'B','1-2 Qs + DI mein use'],['Average',2,1,'B','1-2 Qs'],['Ages',1,1,'B','0-1 Q'],['Partnership',1,1,'B','0-1 Q, caselet mein aata hai'],['Profit and Loss',3,2,'B','2-3 Qs, Mains DI mein bhi'],['Simple and Compound Interest',2,2,'B','1-2 Qs'],['Mixture and Alligation',2,2,'B','1-2 Qs'],['Time and Work + Pipes and Cistern',2,2,'B','1-2 Qs'],['Time Speed Distance + Trains',2,2,'B','1-2 Qs'],['Boats and Streams',1,2,'B','0-1 Q'],['Mensuration',1,2,'B','0-1 Q'],['Permutation and Combination',1,3,'B','0-1 Q'],['Probability',1,3,'B','0-1 Q, Mains DI mein'],['Quadratic Equations',3,1,'P','Prelims: 5 Qs'],['Quantity Comparison (Q1 vs Q2)',2,3,'B','3-5 Qs, Mains mein hard'],['Data Sufficiency (Quant)',1,2,'M','Mains: 2-3 Qs'],['Table DI',3,2,'B','5 Qs set'],['Bar and Line Graph DI',3,2,'B','5 Qs set'],['Pie Chart DI',3,2,'B','5 Qs set'],['Caselet DI',3,3,'B','Prelims 1 set, Mains 2 sets'],['Missing and Radar DI',2,3,'M','Mains: 1 set'],['Arithmetic DI (Mains level)',2,3,'M','Mains: 1-2 sets']],
+r:[['Alphanumeric and Number Series',2,1,'B','2-5 Qs'],['Coding-Decoding (new pattern)',2,2,'B','3-5 Qs'],['Inequality (direct + coded)',3,1,'P','Prelims: 3-5 Qs'],['Syllogism (only a few, possibility)',3,2,'B','3-5 Qs'],['Blood Relations',2,1,'B','2-3 Qs'],['Direction Sense',2,1,'B','2-3 Qs'],['Order and Ranking',1,1,'B','1-2 Qs'],['Linear Seating',3,2,'B','5 Qs set'],['Circular Seating (inside/outside)',3,2,'B','5 Qs set'],['Square, Rectangle and Parallel Seating',3,3,'B','5 Qs set'],['Floor and Flat Puzzle',3,2,'B','5 Qs set'],['Box Puzzle',3,3,'B','5 Qs set'],['Month, Day and Year Scheduling Puzzle',3,3,'B','5 Qs set, Mains mein 2-3 sets'],['Comparison and Uncertain Puzzle',2,2,'B','2-3 Qs'],['Input-Output',2,3,'M','Mains: 5 Qs set'],['Data Sufficiency (Reasoning)',1,2,'M','Mains: 2-3 Qs'],['Critical Reasoning: Assumption, Inference, Conclusion',3,3,'M','Mains: 5-8 Qs'],['Strengthen-Weaken, Cause-Effect, Course of Action',2,3,'M','Mains: 3-5 Qs'],['Computer Aptitude',2,1,'M','Mains: 5-10 Qs']],
+e:[['Grammar basics: Tenses, SVA, Parts of Speech',3,1,'B','Sab grammar sawalon ka base'],['Error Spotting',3,2,'B','3-5 Qs'],['Sentence Improvement and Phrase Replacement',2,2,'B','3-5 Qs'],['Fill in the Blanks (single + double)',2,1,'B','3-5 Qs'],['Vocabulary: Synonyms, Antonyms, Word Usage',2,1,'B','RC ke saath 2-4 Qs'],['Idioms and Phrases',1,1,'B','0-2 Qs'],['Cloze Test',3,2,'B','5-7 Qs'],['Reading Comprehension',3,2,'B','Prelims 8-10, Mains 10-15 Qs'],['Para Jumbles and Sentence Rearrangement',3,2,'B','5 Qs'],['Sentence Connectors and Word Swap',2,2,'B','2-3 Qs'],['Odd Sentence and Paragraph Completion',1,3,'M','Mains: 2-3 Qs'],['Descriptive: Letter and Essay',3,2,'M','Mains: 25 marks']],
+g:[['Banking History, RBI and Banking Structure',3,1,'M','5-8 Qs'],['Monetary Policy: Repo, CRR, SLR, Inflation',3,2,'M','3-5 Qs'],['Financial Markets, SEBI, Insurance and Regulators',2,2,'M','2-4 Qs'],['Banking Terms and Abbreviations',3,1,'M','3-5 Qs'],['Economy, Budget and Economic Survey',2,2,'M','2-4 Qs'],['Govt Schemes, Reports and Indices',3,2,'M','3-5 Qs'],['Static GK: Banks HQ, Taglines, MD/CEO',2,1,'M','2-3 Qs'],['Static GK: Countries, Capitals, Currencies, Parks, Dams',1,1,'M','1-3 Qs'],['Current Affairs: National and State',3,2,'M','8-10 Qs (last 6 months)'],['Current Affairs: International and Summits',2,2,'M','3-5 Qs'],['Awards, Sports, Books, Appointments',2,1,'M','3-5 Qs'],['Banking and Economy News (last 6 months)',3,2,'M','5-8 Qs']]
+};
+var FL=['','Low','Medium','High'],LV=['','Easy','Moderate','Hard'],XS={P:'Prelims',M:'Mains',B:'Prelims + Mains'};
+var RCN=25,FEND=86,RLAST=236;
+// Topics list with foundation days and 25 spaced recall days
+var TL=[],RD={};
+(function(){
+ ['q','r','e','g'].forEach(function(k){
+  var L=SY[k],sc=L.map(function(t){return t[1]+t[2]}),sum=sc.reduce(function(a,b){return a+b},0);
+  var ds=sc.map(function(s){return Math.max(2,Math.round(FEND*s/sum))}),tot=ds.reduce(function(a,b){return a+b},0),i=ds.length-1;
+  while(tot!=FEND){var j=i;if(tot>FEND){if(ds[j]>2){ds[j]--;tot--}}else{ds[j]++;tot++}i=(i+ds.length-1)%ds.length}
+  var s=1;L.forEach(function(t,n){
+   var o={k:k,n:t[0],f:t[1],l:t[2],x:t[3],q:t[4],a:s,b:s+ds[n]-1,r:[]};s+=ds[n];
+   var last=o.b,sp=RLAST-(TL.length%9)-last-1;
+   for(var c=0;c<RCN;c++){var r=last+1+Math.round(sp*Math.pow(c/(RCN-1),1.8));if(o.r.length&&r<=o.r[o.r.length-1])r=o.r[o.r.length-1]+1;o.r.push(r)}
+   o.id=TL.length;TL.push(o);
+   o.r.forEach(function(r,c){(RD[r]=RD[r]||[]).push([o.id,c+1])});
+  });
+ });
+ // Practice-phase sequences: smooth weighted round robin by PYQ frequency + difficulty
+ window.SEQ={};
+ [[91,150,'all'],[151,180,'P'],[181,210,'M'],[211,240,'all']].forEach(function(ph,pi){
+  ['q','r','e','g'].forEach(function(k){
+   var T=TL.filter(function(t){return t.k==k&&(ph[2]=='all'||k=='g'||t.x=='B'||t.x==ph[2])});
+   var wt=T.map(function(t){return t.f*2+(ph[2]=='M'?t.l*2:t.l)}),cw=T.map(function(){return 0}),tw=wt.reduce(function(a,b){return a+b},0),out=[];
+   for(var d=0;d<=ph[1]-ph[0];d++){var bi=0;for(var i=0;i<T.length;i++){cw[i]+=wt[i];if(cw[i]>cw[bi])bi=i}cw[bi]-=tw;out.push(T[bi].id)}
+   SEQ[pi+'_'+k]=out;
+  });
+ });
+})();
+function topicOn(d,k){var p=ph(d);if(p==0){for(var i=0;i<TL.length;i++){var t=TL[i];if(t.k==k&&d>=t.a&&d<=t.b)return t}var L=TL.filter(function(t){return t.k==k});return L[(d-FEND-1)%L.length]}
+ var a=[0,91,151,181,211][p];return TL[SEQ[(p-1)+'_'+k][d-a]]}
+function dueR(d){var L=(RD[d]||[]).slice();var h=Math.ceil(L.length/2);return {am:L.slice(0,h),pm:L.slice(h)}}
+function rl(L){return L.map(function(x){var t=TL[x[0]];return NM[t.k].split(' ')[0]+': '+t.n+' <b>(R'+x[1]+'/'+RCN+')</b>'})}
+function rcount(t){var n=0;t.r.forEach(function(r){var u=dueR(r),inAm=u.am.some(function(x){return x[0]==t.id});if(S.done[r+(inAm?'am':'pm')])n++});return n}
 function ph(d){return d<=90?0:d<=150?1:d<=180?2:d<=210?3:4}
 function dt(d){var s=new Date(S.start+'T00:00:00');s.setDate(s.getDate()+d-1);return s}
 function fmt(o){return o.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}
 function mockFor(d){
  var p=ph(d),w=dt(d).getDay(),wk=Math.ceil(d/7);
- var P='Full Prelims Mock (60 min)',M='Full Mains Mock (3 hrs)',sec=['Quant','Reasoning','English','GA'];
+ var P='Full Prelims Mock (60 min)',M='Full Mains Mock (3 hrs)',sec=['Quant','Reasoning','English','GA'],YR=['2019','2020','2021','2022','2023','2024','2025'],PP='IBPS PO Prelims PYQ paper '+YR[wk%7]+' (memory-based, 60 min)',MP='IBPS PO Mains PYQ paper '+YR[wk%7]+' (memory-based, 3 hrs)';
  if(p==0){if(w==0){if(wk>=5&&wk%2==1)return {t:P+' - diagnostic',m:60};return {t:'Sectional Test: '+sec[wk%4]+' (20 min)',m:20}}return null}
- if(p==1){if(w==6)return {t:P,m:60};if(w==3)return d>=120?{t:P,m:60}:{t:'Sectional: DI + Puzzles (45 min)',m:45};if(w==0&&wk%2==0)return {t:M,m:180};return null}
- if(p==2){if([1,3,5,0].indexOf(w)>=0)return {t:P,m:60};return {t:'Sectional Speed Test: '+sec[d%4],m:30}}
- if(p==3){if([2,4,6].indexOf(w)>=0)return {t:M,m:180};if(w==0)return {t:P,m:60};return {t:'Descriptive: 1 Letter + 1 Essay (30 min)',m:30}}
+ if(p==1){if(w==6)return {t:wk%2?PP:P,m:60};if(w==3)return d>=120?{t:P,m:60}:{t:'Sectional: DI + Puzzles (45 min)',m:45};if(w==0&&wk%2==0)return {t:M,m:180};return null}
+ if(p==2){if(w==1)return {t:PP,m:60};if([3,5,0].indexOf(w)>=0)return {t:P,m:60};return {t:'Sectional Speed Test: '+sec[d%4],m:30}}
+ if(p==3){if(w==2)return {t:MP,m:180};if([4,6].indexOf(w)>=0)return {t:M,m:180};if(w==0)return {t:P,m:60};return {t:'Descriptive: 1 Letter + 1 Essay (30 min)',m:30}}
  if(d>=238)return {t:'Light revision only. Rest well.',m:0};
  return {t:(d%2?M:P),m:d%2?180:60};
 }
@@ -79,35 +113,42 @@ function plan(d){
  var p=ph(d),sp=Object.assign({},SPL[p]),w=dt(d).getDay(),tot=S.hours*60;
  S.weak.forEach(function(k){sp[k]*=1.25});
  var sum=0;for(var k in sp)sum+=sp[k];
- var mk=mockFor(d),out=[],rvm=p==4?90:30,ex=35+rvm+(w==0?90:0)+(d%30==0?180:0),mins=Math.max(tot-ex,120);
+ var due=dueR(d),rcm=Math.min(60,(due.am.length+due.pm.length)*3),amm=due.am.length?Math.max(10,Math.round(rcm/2)):0,pmm=15+rcm-amm;
+ var mk=mockFor(d),out=[],rvm=p==4?90:30,ex=amm+pmm+rvm+(w==0?90:0)+(d%30==0?180:0),mins=Math.max(tot-ex,120),today=[];
  if(mk){out.push({id:'m',s:'MOCK',t:mk.t,x:mk.m?'Analysis ke liye +60 min: galat sawal, time-waste, weak topic note karo':'',m:mk.m+(mk.m?60:0)});mins=Math.max(tot-ex-mk.m-60,120)}
  ['c','q','r','e','g'].forEach(function(k){
-  var m=Math.round(mins*sp[k]/sum/5)*5;
-  var ti=(d+(k=='q'?0:k=='r'?3:k=='e'?5:2))%TP[k==='c'?'q':k].length,tx;
+  var m=Math.round(mins*sp[k]/sum/5)*5,tx,t=k=='c'?null:topicOn(d,k),info='';
   if(k=='c'){tx=CALC[(d+w)%CALC.length]+(p>=2?' (timer ke saath)':'')}
-  else if(p==0)tx='Concept + 25 Qs: '+TP[k][ti];
-  else if(p==1)tx='Timed practice 40 Qs: '+TP[k][ti];
-  else if(p==2)tx='Prelims level speed set: '+TP[k][ti];
-  else if(p==3)tx=(k=='q'||k=='r'?'Mains level (hard) set: ':'Mains focus: ')+TP[k][ti];
-  else tx='Revision + weak area: '+TP[k][ti];
-  if(k=='g')tx='Daily Current Affairs + '+TP.g[ti];
-  if(k=='e'&&(p==3||p==4)&&w%2==1)tx='Descriptive writing practice + '+TP.e[ti];
-  out.push({id:k,s:NM[k],t:tx,x:m+' min',m:m});
+  else{
+   today.push(t.n);
+   var nf=p==0&&d<=FEND?' (Din '+(d-t.a+1)+'/'+(t.b-t.a+1)+')':'';
+   info=' | PYQ: '+FL[t.f]+' ('+t.q+') | Level: '+LV[t.l];
+   if(p==0&&d<=FEND)tx=(d==t.a?'Naya topic, concept + 25 Qs: ':d==t.b?'Topic ke PYQs (2019-2025) solve karo: ':'Practice 30 Qs (PYQ level): ')+t.n+nf;
+   else if(p==0)tx='Phase 1 revision + PYQs: '+t.n;
+   else if(p==1)tx='Timed practice 40 Qs (PYQ level): '+t.n;
+   else if(p==2)tx='Prelims level speed set: '+t.n;
+   else if(p==3)tx=(k=='q'||k=='r'?'Mains level (hard) set: ':'Mains focus: ')+t.n;
+   else tx='Revision + PYQs + weak area: '+t.n;
+   if(k=='g')tx='Daily Current Affairs + '+tx;
+   if(k=='e'&&(p==3||p==4)&&w%2==1)tx='Descriptive writing practice (Letter + Essay) + '+t.n;
+  }
+  out.push({id:k,s:NM[k],t:tx,x:m+' min'+info,m:m});
  });
  if(p==4)out.push({id:'i',s:'INTERVIEW',t:'Interview prep: self-intro, banking basics, current affairs',x:'30 min',m:30});
  if(w==0)out.push({id:'w',s:'REVISION',t:'Weekly mega revision: is hafte ke saare topics + galat sawal + current affairs notes',x:'90 min',m:90});
  if(d%30==0)out.push({id:'mm',s:'REVISION',t:'Monthly mega revision: pichle 30 din ke topics, formulas aur current affairs ka monthly PDF',x:'180 min',m:180});
  out.push({id:'rv',s:'REVISION',t:'Roz ki revision: Error notebook + formula sheet + current affairs notes',x:rvm+' min',m:rvm});
- if(d>=2)out.unshift({id:'am',s:'SUBAH RECALL',t:'Active Recall: bina dekhe blank page par likho (formula, steps, example). Phir notes se check karo.',x:rc(d,RC.slice(0,2)).join('<br>'),m:15});
- out.push({id:'pm',s:'RAAT RECALL',t:'Active Recall: aaj ke saare topics bina dekhe likho. Jo yaad na aaye, usse mark karo.',x:['Aaj: '+nm(d)].concat(rc(d,RC.slice(2))).join('<br>'),m:20});
+ if(due.am.length)out.unshift({id:'am',s:'SUBAH RECALL',t:'25x Recall: har topic bina dekhe blank page par likho (formula, steps, 1 PYQ example). Phir notes se check karo.',x:rl(due.am).join('<br>'),m:amm});
+ out.push({id:'pm',s:'RAAT RECALL',t:'Active Recall: aaj ke topics + neeche wale topics bina dekhe likho. Jo yaad na aaye, usse mark karo.',x:['Aaj: '+today.join(', ')].concat(rl(due.pm)).join('<br>'),m:pmm});
  return out;
 }
 function dayNo(){var a=new Date(S.start+'T00:00:00'),b=new Date();b.setHours(0,0,0,0);return Math.round((b-a)/864e5)+1}
 var VD=1,tab=0,v=document.getElementById('v');
 function toggle(d,id){var k=d+id;if(S.done[k])delete S.done[k];else S.done[k]=1;save();show()}
 function show(){
- for(var i=0;i<6;i++)document.getElementById('t'+i).className=i==tab?'on':'';
+ for(var i=0;i<7;i++)document.getElementById('t'+i).className=i==tab?'on':'';
  if(!S.start&&tab!=3){tab=3;show();msg('Pehle start date chuno aur Plan banao dabao');return}
+ if(tab==6)return syl();
  if(tab==5)return mentor();
  if(tab==4)return logTab();
  if(tab==3)return setup();
@@ -140,10 +181,34 @@ function planTab(){
   ms.forEach(function(m){h+='<div class="row"><span>'+fmt(dt(m[0]))+' (Din '+m[0]+')</span><span style="text-align:right">'+m[1]+'</span></div>'});
   h+='</div></details></div>';
  });
- h+='<div class="card"><h2>Exam pattern (yaad rakho)</h2><div class="sub">Prelims: English 30Q, Quant 35Q, Reasoning 35Q = 100Q, 60 min (20 min har section), negative marking 1/4. Mains: 3 hrs 30 min, 225 marks (objective + Descriptive). Phir Interview. Prelims marks final merit mein count nahi hote, sirf Mains + Interview se merit banta hai. Notification se verify karte rehna.</div></div>';
- h+='<div class="card"><h2>5x Recall system</h2><div class="sub">Har topic ka Active Recall 5 baar: +1 din (R1), +3 din (R2), +7 din (R3), +15 din (R4), +30 din (R5). Subah R1 + R2, raat ko Aaj + R3 + R4 + R5. Saath mein roz Revision, Sunday ko 90 min mega revision aur har 30 din par 180 min Monthly mega revision.</div></div>';
+ h+='<div class="card"><h2>Official syllabus + exam pattern</h2><div class="sub"><b>Prelims (100 marks, 60 min, 20 min har section):</b> English Language 30Q, Quantitative Aptitude 35Q, Reasoning Ability 35Q.<br><b>Mains (objective 200 marks + Descriptive 25 marks):</b> Reasoning and Computer Aptitude, Data Analysis and Interpretation, English Language, General/Economy/Banking Awareness. Phir Descriptive (1 Letter + 1 Essay, 30 min).<br><b>Interview:</b> 100 marks. Final merit = Mains 80% + Interview 20%. Prelims sirf qualifying hai.<br>Negative marking: har galat jawab par 1/4. Pattern har saal thoda badal sakta hai, isliye naya notification ibps.in par zaroor dekho.</div></div>';
+ h+='<div class="card"><h2>PYQ difficulty trend (2019-2025)</h2><div class="sub"><b>Prelims:</b> overall Moderate. Reasoning sabse lamba (60-70% puzzles + seating), Quant mein DI + arithmetic word problems badhe hain, English mein RC + Cloze + Para Jumbles se 60% sawal.<br><b>Mains:</b> Moderate to Hard. Reasoning mein naye type ke puzzles + critical reasoning, DI mein caselet, missing aur arithmetic DI, GA mein last 6 mahine ki banking/economy news sabse zyada.<br>Isi trend ke hisaab se har topic ko PYQ frequency (High/Medium/Low) aur Level (Easy/Moderate/Hard) diya gaya hai. Syllabus tab mein poori list dekho.</div></div>';
+ h+='<div class="card"><h2>25x Recall system</h2><div class="sub">Official syllabus ke saare '+TL.length+' topics, har topic 25 baar Active Recall se revise hoga. Topic khatam hote hi agle din R1, phir gap dheere-dheere badhta hai (1, 2, 3, 4, 5 din... aakhir mein 15-17 din). Last recall exam se theek pehle (Din 228-236), taaki sab taaza rahe. Subah ki list Subah Recall mein, baaki Raat Recall mein. Recall task tick karoge tabhi count badhega (Syllabus tab mein R x/25 dikhega). Saath mein roz Revision, Sunday ko 90 min mega revision aur har 30 din par 180 min Monthly mega revision.<br><b>Total recalls: '+TL.length*RCN+'</b></div></div>';
  h+='<div class="card"><h2>Cut-off reality (previous years)</h2><div class="sub">Prelims GEN: 2025 mein 49.21, 2024 mein 48.5, 2022 mein 49.75. Mains GEN (225 marks mein): 2019 mein 71.25, 2022 mein 71.25, 2024 mein 66.5. Section-wise cut-off bhi clear karna padta hai. Isliye target: Prelims mocks mein 65-70+, Mains mocks mein 100+/225.</div></div>';
- h+='<div class="card"><h2>Smart study rules (toppers wale)</h2><div class="sub">1. Attempts nahi, accuracy: Prelims mein English 24-26, Quant 22-25, Reasoning 24-27 attempt, accuracy 85%+.<br>2. Easy sawal pehle, 2 baar mein skip: lamba puzzle/DI ko last mein.<br>3. 1 mock = 1 ghanta test + 1 ghanta analysis. Galat sawal Error notebook mein daalo.<br>4. Spaced revision: 1, 3, 7, 21 din baad dobara.<br>5. Sectional timer: har section 20 min, kabhi extend mat karo.<br>6. Mock ka time actual exam wale slot par do, taaki body clock set ho.<br>7. Roz 30 min calculation, roz 30 min current affairs (monthly PDF revision).<br>8. Mock ke baad score nahi, section-wise accuracy dekho. Jo section 80% se neeche, wahi agle hafte ka focus.<br>9. Sleep 7 ghante, mock se pehle raat padhai nahi.<br>10. Har sawal par average 45 second. Prelims mein pehle 20 second mein decide karo: solve ya skip.<br>11. Hafte ke end mein scoreboard: attempts, accuracy, time per question, weak topics.<br>12. Current affairs: last 6-8 mahine ka Mains ke liye, roz 30-45 min aur weekly revision.<br>13. Consistency intensity se bada hai: roz tasks poore karna, kabhi-kabhi 12 ghante se behtar hai.</div></div>';
+ h+=readyCard();
+ h+='<div class="card"><h2>Smart study rules (toppers wale)</h2><div class="sub">1. Attempts nahi, accuracy: Prelims mein English 24-26, Quant 22-25, Reasoning 24-27 attempt, accuracy 85%+.<br>2. Easy sawal pehle, 2 baar mein skip: lamba puzzle/DI ko last mein.<br>3. 1 mock = 1 ghanta test + 1 ghanta analysis. Galat sawal Error notebook mein daalo.<br>4. Har topic 25 baar recall (Syllabus tab), galat sawal Error notebook se 1, 3, 7, 21 din baad dobara.<br>5. Sectional timer: har section 20 min, kabhi extend mat karo.<br>6. Mock ka time actual exam wale slot par do, taaki body clock set ho.<br>7. Roz 30 min calculation, roz 30 min current affairs (monthly PDF revision).<br>8. Mock ke baad score nahi, section-wise accuracy dekho. Jo section 80% se neeche, wahi agle hafte ka focus.<br>9. Sleep 7 ghante, mock se pehle raat padhai nahi.<br>10. Har sawal par average 45 second. Prelims mein pehle 20 second mein decide karo: solve ya skip.<br>11. Hafte ke end mein scoreboard: attempts, accuracy, time per question, weak topics.<br>12. Current affairs: last 6-8 mahine ka Mains ke liye, roz 30-45 min aur weekly revision.<br>13. Consistency intensity se bada hai: roz tasks poore karna, kabhi-kabhi 12 ghante se behtar hai.</div></div>';
+ v.innerHTML=h;
+}
+function readyCard(){
+ var all=0,dn=0;TL.forEach(function(t){all+=RCN;dn+=rcount(t)});
+ var pm=S.mocks.filter(function(m){return m.k=='Prelims'}).slice(-5),mm=S.mocks.filter(function(m){return m.k=='Mains'}).slice(-3);
+ var av=function(L){return L.length?L.reduce(function(a,m){return a+m.s*100/m.x},0)/L.length:0};
+ var c=[[dn>=all,'Saare topics 25/25 recall ('+dn+'/'+all+')'],[firstOpen()>TOT,'240 din ka poora plan complete'],[pm.length>=5&&av(pm)>=65,'Last 5 Prelims mocks ka average 65+ ('+(pm.length?av(pm).toFixed(1):'-')+')'],[mm.length>=3&&av(mm)>=50,'Last 3 Mains mocks ka average 50%+ (100+/200)'],[null,'PYQ papers 2019-2025 (Prelims + Mains) solve aur analyse kiye'],[null,'Har section mein 80%+ accuracy, sectional cut-off se upar']];
+ var h='<div class="card" style="border-color:var(--ok)"><h2>Selection readiness checklist</h2><div class="sub">Koi bhi plan 100% guarantee nahi de sakta, kyunki result exam day ki performance aur cut-off par bhi depend karta hai. Lekin jo aspirant ye sab poora karta hai, wo cut-off se kaafi upar rehta hai aur uska selection chance sabse zyada hota hai.</div>';
+ c.forEach(function(x){h+='<div class="row"><span>'+x[1]+'</span><span>'+(x[0]===null?'Khud check karo':x[0]?'&#9989;':'&#11036;')+'</span></div>'});
+ return h+'</div>';
+}
+function syl(){
+ var cd=cur(),all=0,dn=0;TL.forEach(function(t){all+=RCN;dn+=rcount(t)});
+ var h='<div class="card"><h2>Official syllabus + 25x recall tracker</h2><div class="bar"><i style="width:'+Math.round(dn*100/all)+'%"></i></div><div class="sub" style="margin-top:6px">'+dn+' / '+all+' recalls complete. Har topic ke saath PYQ frequency, difficulty level aur stage diya hai.</div></div>';
+ ['q','r','e','g'].forEach(function(k){
+  h+='<div class="card"><details'+(k=='q'?' open':'')+'><summary>'+({q:'Quantitative Aptitude / Data Analysis',r:'Reasoning Ability + Computer Aptitude',e:'English Language',g:'General / Economy / Banking Awareness'})[k]+'</summary>';
+  TL.filter(function(t){return t.k==k}).forEach(function(t){
+   var n=rcount(t),nx=t.r.filter(function(r){return r>=cd})[0];
+   h+='<div style="padding:8px 0;border-top:1px solid var(--bd)"><b>'+t.n+'</b><div class="chips" style="margin:4px 0"><span class="pill"'+(t.f==3?' style="background:var(--mk);color:#fff"':'')+'>PYQ: '+FL[t.f]+'</span><span class="pill">'+LV[t.l]+'</span><span class="pill">'+XS[t.x]+'</span><span class="pill">Din '+t.a+'-'+t.b+'</span></div><small class="sub">'+t.q+(nx?' | Agla recall: Din '+nx:'')+'</small><div style="display:flex;align-items:center;gap:8px;margin-top:4px"><div class="bar" style="flex:1"><i style="width:'+n*4+'%"></i></div><small>R '+n+'/'+RCN+'</small></div></div>';
+  });
+  h+='</details></div>';
+ });
  v.innerHTML=h;
 }
 function prog(){
@@ -178,9 +243,6 @@ function firstOpen(){for(var d=1;d<=TOT;d++)if(!dayComplete(d))return d;return T
 function cur(){return Math.min(TOT,firstOpen())}
 function nx(){if(!dayComplete(VD)){msg('Pehle aaj ke saare tasks poore karo. Tabhi agla din khulega.');return}VD=Math.min(TOT,VD+1);show()}
 function msg(t){var e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(function(){e.style.display='none'},3500)}
-var RC=[[1,'R1','kal'],[3,'R2','3 din pehle'],[7,'R3','1 hafta pehle'],[15,'R4','15 din pehle'],[30,'R5','30 din pehle']];
-function nm(d){var a=[];['q','r','e','g'].forEach(function(k){var L=TP[k],o={q:0,r:3,e:5,g:2}[k];a.push(L[(d+o)%L.length])});return a.join(', ')}
-function rc(d,L){var s=[];L.forEach(function(x){if(d-x[0]>=1)s.push(x[1]+' ('+x[2]+'): '+nm(d-x[0]))});return s}
 var MT=[['IBPS (official)','https://www.ibps.in','Notification, syllabus aur pattern ka asli source'],['Adda247 / BankersAdda','https://www.bankersadda.com','Cut-off, exam analysis, daily current affairs'],['Oliveboard','https://www.oliveboard.in','Cut-off analysis, mocks aur strategy blogs'],['Mahendras','https://www.mahendras.org','Study plan aur topper-style strategy guides'],['Testbook','https://testbook.com','Practice sets, daily quiz, mock tests'],['Physics Wallah (Banking)','https://www.pw.live/banking','Mains/Prelims strategy aur free classes']];
 function addD(){var t=document.getElementById('dt').value.trim();if(!t)return;S.dbt.push(t);save();show()}
 function dl(i){S.dbt.splice(i,1);save();show()}
@@ -227,7 +289,7 @@ function sv(){
  S.weak=[].slice.call(document.querySelectorAll('.wk')).filter(function(c){return c.checked}).map(function(c){return c.value});
  save();VD=cur();tab=0;show();
 }
-for(var i=0;i<6;i++)(function(i){document.getElementById('t'+i).onclick=function(){tab=i;show()}})(i);
+for(var i=0;i<7;i++)(function(i){document.getElementById('t'+i).onclick=function(){tab=i;show()}})(i);
 if(S.start)VD=cur();
 show();
 </script>
