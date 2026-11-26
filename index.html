@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IBPS PO 8-Month Planner</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#6b7280;--ac:#2f5bea;--ok:#14a05a;--mk:#e0572f;--bd:#e3e6ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141a;--card:#1c1f28;--tx:#eceef4;--mu:#9aa1b2;--ac:#6b8cff;--ok:#38c783;--mk:#ff8a63;--bd:#2c303c}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:640px;margin:auto;padding:12px}
+h1{font-size:19px;margin:4px 0 2px}h2{font-size:16px;margin:0 0 8px}
+.sub{color:var(--mu);font-size:13px;margin-bottom:10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tabs button{flex:1;padding:9px 2px;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+label{display:block;font-size:13px;color:var(--mu);margin:8px 0 3px}
+input,select,button{font:inherit}
+input[type=date],input[type=number],input[type=text],select{width:100%;margin-bottom:6px;padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips label{margin:0;display:flex;align-items:center;gap:5px;color:var(--tx);border:1px solid var(--bd);padding:5px 9px;border-radius:20px}
+.btn{background:var(--ac);color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:600;width:100%;margin-top:10px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.nav button{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:6px 12px}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;background:var(--bd);color:var(--tx)}
+.mock{background:var(--mk);color:#fff}
+.task{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--bd);align-items:flex-start}
+.task:first-of-type{border-top:0}
+.task input{width:20px;height:20px;margin-top:2px;flex:none}
+.task.done .t{text-decoration:line-through;color:var(--mu)}
+.t b{display:block}.t small{color:var(--mu)}
+.bar{height:9px;border-radius:9px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--bd);font-size:14px}
+details summary{font-weight:600;cursor:pointer;padding:4px 0}
+.ov{overflow-x:auto}
+#toast{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--mk);color:#fff;padding:10px 14px;border-radius:10px;display:none;z-index:9;text-align:center;font-weight:600}
+</style>
+</head>
+<body>
+<h1>IBPS PO 8-Month Planner</h1>
+<div class="sub">Serious aspirants ke liye default daily target: Quant, Reasoning, English, GA/Banking, Calculation + Mock schedule</div>
+<div class="tabs"><button id="t0" class="on">Aaj</button><button id="t1">Plan</button><button id="t2">Progress</button><button id="t4">Log</button><button id="t5">Mentor</button><button id="t3">Setup</button></div>
+<div id="toast"></div><div id="v"></div>
+
+<script>
+var TOT=240;
+var S={start:'',hours:8,weak:[],done:{},mocks:[],errs:[],dbt:[]};
+try{var x=localStorage.getItem('ibpsplan');if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
+function save(){try{localStorage.setItem('ibpsplan',JSON.stringify(S))}catch(e){}}
+var NM={q:'Quant',r:'Reasoning',e:'English',g:'GA / Banking',c:'Calculation'};
+var TP={
+q:['Simplification and Approximation','Number Series','Percentage','Ratio and Proportion','Average','Profit and Loss','Simple and Compound Interest','Time and Work','Time Speed Distance','Boats and Streams','Mixture and Alligation','Ages','Partnership','Quadratic Equations','Permutation and Combination','Probability','Mensuration','Data Sufficiency','Table DI','Bar and Line DI','Pie Chart DI','Caselet DI','Missing and Radar DI','Arithmetic mixed set'],
+r:['Coding-Decoding','Inequality','Syllogism','Blood Relations','Direction Sense','Order and Ranking','Linear Seating','Circular Seating','Square and Box Puzzle','Floor and Scheduling Puzzle','Comparison and Month Puzzle','Input-Output','Data Sufficiency','Alphanumeric Series','Statement-Assumption','Course of Action','Strengthen-Weaken','Computer Aptitude basics'],
+e:['Reading Comprehension','Cloze Test','Error Spotting','Sentence Improvement','Para Jumbles','Fill in the Blanks','Vocabulary: Synonyms-Antonyms','Idioms and Phrases','Phrase Replacement','Sentence Connectors','Word Swap','Grammar rules revision'],
+g:['Banking: RBI and Monetary Policy','Economy basics and Budget','Current Affairs: last 15 days','Static GK: Banks and HQs','Financial Awareness: Schemes','Awards, Sports, Summits','Banking terms and Abbreviations','Govt Schemes and Reports','Current Affairs: monthly revision']
+};
+var CALC=['Tables 2-30 + squares to 30','Cubes to 20 + square roots','Fractions to percent (1/2 to 1/20)','Multiplication tricks (2-digit x 2-digit)','Approximation drill: 15 Qs in 8 min','Simplification speed: 20 Qs in 10 min','Percent and ratio shortcuts'];
+var SPL=[{q:.30,r:.25,e:.18,g:.15,c:.12},{q:.30,r:.26,e:.15,g:.15,c:.14},{q:.30,r:.28,e:.15,g:.12,c:.15},{q:.28,r:.28,e:.14,g:.15,c:.15},{q:.28,r:.27,e:.15,g:.15,c:.15}];
+var PH=[{n:'Phase 1: Foundation',a:1,b:90,d:'Concept + basic practice. Har topic seekho, 25 questions.'},
+{n:'Phase 2: Practice + Speed',a:91,b:150,d:'Timed practice, sectional tests, weekly full Prelims mock.'},
+{n:'Phase 3: Prelims Sprint',a:151,b:180,d:'Prelims mocks 4 din/week, analysis, speed + accuracy.'},
+{n:'Phase 4: Mains Sprint',a:181,b:210,d:'Mains level (High-level DI, Puzzles), Descriptive writing.'},
+{n:'Phase 5: Final Revision',a:211,b:240,d:'Daily full mocks, revision, Descriptive + Interview prep.'}];
+function ph(d){return d<=90?0:d<=150?1:d<=180?2:d<=210?3:4}
+function dt(d){var s=new Date(S.start+'T00:00:00');s.setDate(s.getDate()+d-1);return s}
+function fmt(o){return o.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}
+function mockFor(d){
+ var p=ph(d),w=dt(d).getDay(),wk=Math.ceil(d/7);
+ var P='Full Prelims Mock (60 min)',M='Full Mains Mock (3 hrs)',sec=['Quant','Reasoning','English','GA'];
+ if(p==0){if(w==0){if(wk>=5&&wk%2==1)return {t:P+' - diagnostic',m:60};return {t:'Sectional Test: '+sec[wk%4]+' (20 min)',m:20}}return null}
+ if(p==1){if(w==6)return {t:P,m:60};if(w==3)return d>=120?{t:P,m:60}:{t:'Sectional: DI + Puzzles (45 min)',m:45};if(w==0&&wk%2==0)return {t:M,m:180};return null}
+ if(p==2){if([1,3,5,0].indexOf(w)>=0)return {t:P,m:60};return {t:'Sectional Speed Test: '+sec[d%4],m:30}}
+ if(p==3){if([2,4,6].indexOf(w)>=0)return {t:M,m:180};if(w==0)return {t:P,m:60};return {t:'Descriptive: 1 Letter + 1 Essay (30 min)',m:30}}
+ if(d>=238)return {t:'Light revision only. Rest well.',m:0};
+ return {t:(d%2?M:P),m:d%2?180:60};
+}
+function plan(d){
+ var p=ph(d),sp=Object.assign({},SPL[p]),w=dt(d).getDay(),tot=S.hours*60;
+ S.weak.forEach(function(k){sp[k]*=1.25});
+ var sum=0;for(var k in sp)sum+=sp[k];
+ var mk=mockFor(d),out=[],rvm=p==4?90:30,ex=35+rvm+(w==0?90:0)+(d%30==0?180:0),mins=Math.max(tot-ex,120);
+ if(mk){out.push({id:'m',s:'MOCK',t:mk.t,x:mk.m?'Analysis ke liye +60 min: galat sawal, time-waste, weak topic note karo':'',m:mk.m+(mk.m?60:0)});mins=Math.max(tot-ex-mk.m-60,120)}
+ ['c','q','r','e','g'].forEach(function(k){
+  var m=Math.round(mins*sp[k]/sum/5)*5;
+  var ti=(d+(k=='q'?0:k=='r'?3:k=='e'?5:2))%TP[k==='c'?'q':k].length,tx;
+  if(k=='c'){tx=CALC[(d+w)%CALC.length]+(p>=2?' (timer ke saath)':'')}
+  else if(p==0)tx='Concept + 25 Qs: '+TP[k][ti];
+  else if(p==1)tx='Timed practice 40 Qs: '+TP[k][ti];
+  else if(p==2)tx='Prelims level speed set: '+TP[k][ti];
+  else if(p==3)tx=(k=='q'||k=='r'?'Mains level (hard) set: ':'Mains focus: ')+TP[k][ti];
+  else tx='Revision + weak area: '+TP[k][ti];
+  if(k=='g')tx='Daily Current Affairs + '+TP.g[ti];
+  if(k=='e'&&(p==3||p==4)&&w%2==1)tx='Descriptive writing practice + '+TP.e[ti];
+  out.push({id:k,s:NM[k],t:tx,x:m+' min',m:m});
+ });
+ if(p==4)out.push({id:'i',s:'INTERVIEW',t:'Interview prep: self-intro, banking basics, current affairs',x:'30 min',m:30});
+ if(w==0)out.push({id:'w',s:'REVISION',t:'Weekly mega revision: is hafte ke saare topics + galat sawal + current affairs notes',x:'90 min',m:90});
+ if(d%30==0)out.push({id:'mm',s:'REVISION',t:'Monthly mega revision: pichle 30 din ke topics, formulas aur current affairs ka monthly PDF',x:'180 min',m:180});
+ out.push({id:'rv',s:'REVISION',t:'Roz ki revision: Error notebook + formula sheet + current affairs notes',x:rvm+' min',m:rvm});
+ if(d>=2)out.unshift({id:'am',s:'SUBAH RECALL',t:'Active Recall: bina dekhe blank page par likho (formula, steps, example). Phir notes se check karo.',x:rc(d,RC.slice(0,2)).join('<br>'),m:15});
+ out.push({id:'pm',s:'RAAT RECALL',t:'Active Recall: aaj ke saare topics bina dekhe likho. Jo yaad na aaye, usse mark karo.',x:['Aaj: '+nm(d)].concat(rc(d,RC.slice(2))).join('<br>'),m:20});
+ return out;
+}
+function dayNo(){var a=new Date(S.start+'T00:00:00'),b=new Date();b.setHours(0,0,0,0);return Math.round((b-a)/864e5)+1}
+var VD=1,tab=0,v=document.getElementById('v');
+function toggle(d,id){var k=d+id;if(S.done[k])delete S.done[k];else S.done[k]=1;save();show()}
+function show(){
+ for(var i=0;i<6;i++)document.getElementById('t'+i).className=i==tab?'on':'';
+ if(!S.start&&tab!=3){tab=3;show();msg('Pehle start date chuno aur Plan banao dabao');return}
+ if(tab==5)return mentor();
+ if(tab==4)return logTab();
+ if(tab==3)return setup();
+ if(tab==0)return today();
+ if(tab==1)return planTab();
+ return prog();
+}
+function today(){
+ VD=Math.min(VD,cur());var d=VD,pl=plan(d),h='',dn=0;
+ pl.forEach(function(t){if(S.done[d+t.id])dn++});
+ var wait=d<1?'Shuru hone mein '+(1-d)+' din':'';
+ var P=PH[ph(d)];
+ h+='<div class="nav"><button onclick="VD=Math.max(1,VD-1);show()">&larr;</button><div style="text-align:center"><b>Din '+d+' / '+TOT+'</b><br><small class="sub">'+fmt(dt(d))+'</small></div><button onclick="nx()">&rarr;</button></div>';
+ h+='<div class="card"><span class="pill">'+P.n+'</span> <span class="pill">'+S.hours+' hrs target</span><div class="sub" style="margin:6px 0 0">'+P.d+'</div></div>';
+ h+=motCard(d);var du=due().length;if(du)h+='<div class="card" style="border-color:var(--mk)"><b>'+du+' galat sawal aaj revise karne hain</b> <small class="sub">(Log tab &rarr; Error notebook)</small></div>';
+ h+='<div class="card"><h2>Aaj ka target ('+dn+'/'+pl.length+')</h2>';
+ pl.forEach(function(t){h+='<label class="task'+(S.done[d+t.id]?' done':'')+'" style="color:var(--tx);margin:0;display:flex"><input type="checkbox" '+(S.done[d+t.id]?'checked':'')+' onchange="toggle('+d+',\''+t.id+'\')"><span class="t"><b>'+(t.id=='m'?'<span class="pill mock">MOCK</span> ':'<span class="pill">'+t.s+'</span> ')+t.t+'</b><small>'+t.x+'</small></span></label>'});
+ h+='</div>';
+ h+=(dayComplete(d)?'<button class="btn" onclick="nx()">'+(d>=TOT?'Plan poora! Shabaash!':'Din '+d+' poora! Agle din par jao')+'</button>':'<div class="card" style="border-color:var(--mk)"><b>Agla din LOCKED hai.</b> Aaj ke '+(pl.length-dn)+' tasks baaki hain. Jab tak ye poore nahi hote, aage nahi badh sakte.</div>');
+ var lag=dayNo()-cur();if(lag>0)h+='<div class="sub">Calendar se '+lag+' din peeche ho. Roz thoda extra karke catch-up karo.</div>';
+ h+='<button class="btn" onclick="VD=cur();show()">Meri current din par jao</button>';
+ v.innerHTML=h;
+}
+function planTab(){
+ var h='';
+ PH.forEach(function(p,i){
+  h+='<div class="card"><h2>'+p.n+'</h2><div class="sub">Din '+p.a+'-'+p.b+' ('+fmt(dt(p.a))+' se '+fmt(dt(p.b))+')<br>'+p.d+'</div>';
+  var ms=[];for(var d=p.a;d<=p.b;d++){var m=mockFor(d);if(m&&m.m)ms.push([d,m.t])}
+  h+='<details><summary>Mock tests ('+ms.length+')</summary><div class="ov">';
+  ms.forEach(function(m){h+='<div class="row"><span>'+fmt(dt(m[0]))+' (Din '+m[0]+')</span><span style="text-align:right">'+m[1]+'</span></div>'});
+  h+='</div></details></div>';
+ });
+ h+='<div class="card"><h2>Exam pattern (yaad rakho)</h2><div class="sub">Prelims: English 30Q, Quant 35Q, Reasoning 35Q = 100Q, 60 min (20 min har section), negative marking 1/4. Mains: 3 hrs 30 min, 225 marks (objective + Descriptive). Phir Interview. Prelims marks final merit mein count nahi hote, sirf Mains + Interview se merit banta hai. Notification se verify karte rehna.</div></div>';
+ h+='<div class="card"><h2>5x Recall system</h2><div class="sub">Har topic ka Active Recall 5 baar: +1 din (R1), +3 din (R2), +7 din (R3), +15 din (R4), +30 din (R5). Subah R1 + R2, raat ko Aaj + R3 + R4 + R5. Saath mein roz Revision, Sunday ko 90 min mega revision aur har 30 din par 180 min Monthly mega revision.</div></div>';
+ h+='<div class="card"><h2>Cut-off reality (previous years)</h2><div class="sub">Prelims GEN: 2025 mein 49.21, 2024 mein 48.5, 2022 mein 49.75. Mains GEN (225 marks mein): 2019 mein 71.25, 2022 mein 71.25, 2024 mein 66.5. Section-wise cut-off bhi clear karna padta hai. Isliye target: Prelims mocks mein 65-70+, Mains mocks mein 100+/225.</div></div>';
+ h+='<div class="card"><h2>Smart study rules (toppers wale)</h2><div class="sub">1. Attempts nahi, accuracy: Prelims mein English 24-26, Quant 22-25, Reasoning 24-27 attempt, accuracy 85%+.<br>2. Easy sawal pehle, 2 baar mein skip: lamba puzzle/DI ko last mein.<br>3. 1 mock = 1 ghanta test + 1 ghanta analysis. Galat sawal Error notebook mein daalo.<br>4. Spaced revision: 1, 3, 7, 21 din baad dobara.<br>5. Sectional timer: har section 20 min, kabhi extend mat karo.<br>6. Mock ka time actual exam wale slot par do, taaki body clock set ho.<br>7. Roz 30 min calculation, roz 30 min current affairs (monthly PDF revision).<br>8. Mock ke baad score nahi, section-wise accuracy dekho. Jo section 80% se neeche, wahi agle hafte ka focus.<br>9. Sleep 7 ghante, mock se pehle raat padhai nahi.<br>10. Har sawal par average 45 second. Prelims mein pehle 20 second mein decide karo: solve ya skip.<br>11. Hafte ke end mein scoreboard: attempts, accuracy, time per question, weak topics.<br>12. Current affairs: last 6-8 mahine ka Mains ke liye, roz 30-45 min aur weekly revision.<br>13. Consistency intensity se bada hai: roz tasks poore karna, kabhi-kabhi 12 ghante se behtar hai.</div></div>';
+ v.innerHTML=h;
+}
+function prog(){
+ var dn=0,all=0,md=0,ma=0,per=[];
+ for(var d=1;d<=TOT;d++){
+  var p=plan(d);p.forEach(function(t){all++;if(S.done[d+t.id]){dn++;if(t.id=='m')md++}if(t.id=='m')ma++})}
+ var n=Math.min(TOT,Math.max(0,dayNo())),exp=0;
+ for(d=1;d<=n;d++)plan(d).forEach(function(t){exp++});
+ var cur=0;for(d=1;d<=n;d++)plan(d).forEach(function(t){if(S.done[d+t.id])cur++});
+ var pct=function(a,b){return b?Math.round(a*100/b):0};
+ var h='<div class="card"><h2>Overall progress</h2><div class="bar"><i style="width:'+pct(dn,all)+'%"></i></div><div class="sub" style="margin-top:6px">'+dn+' / '+all+' tasks complete ('+pct(dn,all)+'%)</div></div>';
+ h+='<div class="card"><h2>Ab tak ka track</h2><div class="bar"><i style="width:'+pct(cur,exp)+'%"></i></div><div class="sub" style="margin-top:6px">'+(n<1?'Plan abhi shuru nahi hua':'Din 1-'+n+': '+cur+' / '+exp+' tasks ('+pct(cur,exp)+'%)')+'</div></div>';
+ h+='<div class="card"><h2>Mocks</h2><div class="sub">'+md+' / '+ma+' mock tasks complete</div></div>';
+ v.innerHTML=h;
+}
+var MQ=['Aaj ka ek din skip = 8 ghante peeche. Lakhon competitors aaj bhi padh rahe hain.','Jo aaj aaram chunega, wo interview call ka intezaar karega. Jo mehnat chunega, wo joining letter ka.','Sapna wo nahi jo neend mein aaye, sapna wo hai jo neend na aane de. (APJ Abdul Kalam)','Motivation par mat jeeyo, system par jeeyo. Bas aaj ke tasks par tick lagao.','Galti mock mein ho jaye, exam hall mein nahi. Isliye har mock ko asli exam samjho.','8 mahine ki mehnat, poori zindagi ki surakshit naukri. Sauda mehnga nahi hai.','Cut-off sirf ek number hai. Roz ka target poora karo, number khud aa jayega.','Thak gaye ho? Rest lo, quit mat karo.','Aaj ka 1% behtar, 240 din mein bahut bada fark.','Result ke din ya to bahana hoga ya selection. Tum kaunsa chunoge?','Jab man na kare, tab padhna hi asli taakat hai. Aaj wahi din hai.','Topper aur tum mein fark talent ka nahi, roz ke discipline ka hai.'];
+function dd2(d){var p=plan(d);if(!p.length)return false;var n=0;p.forEach(function(t){if(S.done[d+t.id])n++});return n*2>=p.length}
+function motCard(d){var f=firstOpen(),st=f-1,hr=0,e=Math.min(TOT,f);
+ for(var k=1;k<=e;k++)plan(k).forEach(function(t){if(S.done[k+t.id])hr+=t.m});
+ return '<div class="card" style="border-color:var(--ac)"><b>'+MQ[d%MQ.length]+'</b>'+(S.why?'<div class="sub" style="margin-top:6px">Meri wajah: <b>'+esc(S.why)+'</b></div>':'')+'<div class="chips" style="margin-top:8px"><span class="pill">Poore kiye din: '+st+'/'+TOT+'</span><span class="pill">'+Math.round(hr/60)+' ghante padhe</span><span class="pill">'+S.mocks.length+' mocks</span><span class="pill">'+Math.max(0,TOT-d)+' din bache</span></div></div>'}
+function anal(){
+ var k=S.mocks.filter(function(m){return m.c!==undefined&&(m.c+m.z+m.t+m.g)>0}).slice(-3);
+ var h='<div class="card"><h2>Topper-style mock analysis</h2>';
+ if(k.length){var s={c:0,z:0,t:0,g:0},tot=0,mx='c';k.forEach(function(m){s.c+=m.c;s.z+=m.z;s.t+=m.t;s.g+=m.g});for(var x in s){tot+=s[x];if(s[x]>s[mx])mx=x}
+  var N={c:'Concept gap',z:'Silly mistake',t:'Time pressure',g:'Guess'},A={c:'Is hafte us topic ko dobara seekho, phir 30 sawal practice karo.',z:'Option dobara padho, units check karo, aur calculation ko 2 baar mat karo balki sahi tarike se likho.',t:'Sectional timer par practice badhao aur lambe sawal skip karna seekho.',g:'Pakka na ho to attempt mat karo. Negative marking 1/4 hai.'};
+  h+='<div class="sub">Last '+k.length+' mocks mein galat sawalon ki wajah: '+Object.keys(N).map(function(x){return N[x]+' '+Math.round(s[x]*100/tot)+'%'}).join(', ')+'.<br><b>Sabse badi wajah: '+N[mx]+'</b><br>'+A[mx]+'</div>'}
+ h+='<details><summary>Toppers mock ka analysis aise karte hain</summary><div class="sub">1. Mock ke turant baad 10 min break, phir 48 ghante ke andar analysis.<br>2. Har sawal ko 4 bucket mein daalo: Sahi aur jaldi, Sahi par der lagi, Galat, Chhoda hua.<br>3. Chhode hue sawal bina timer ke solve karo. Ho gaya to time-management ki galti, nahi hua to concept gap.<br>4. Galat sawal ki wajah tag karo: Concept gap, Silly mistake, Time pressure ya Guess (upar form mein count daalo).<br>5. Jo sawal sahi tha par 2 min se zyada laga, uska shortcut seekho.<br>6. Sirf galat aur slow sawalon ka alternate method dekho (video ya solution).<br>7. Agle mock ke liye 3 cheezein likho: ek attempt target, ek rule (jaise easy pehle), ek topic.<br>8. Galat sawal Error notebook mein daalo, wo 1, 3, 7, 21 din baad wapas aayenge.<br>9. Section order test karo: pehle apna strongest section, taaki confidence bane.</div></details></div>';
+ return h;
+}
+function dayComplete(d){var p=plan(d);for(var i=0;i<p.length;i++)if(!S.done[d+p[i].id])return false;return true}
+function firstOpen(){for(var d=1;d<=TOT;d++)if(!dayComplete(d))return d;return TOT+1}
+function cur(){return Math.min(TOT,firstOpen())}
+function nx(){if(!dayComplete(VD)){msg('Pehle aaj ke saare tasks poore karo. Tabhi agla din khulega.');return}VD=Math.min(TOT,VD+1);show()}
+function msg(t){var e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(function(){e.style.display='none'},3500)}
+var RC=[[1,'R1','kal'],[3,'R2','3 din pehle'],[7,'R3','1 hafta pehle'],[15,'R4','15 din pehle'],[30,'R5','30 din pehle']];
+function nm(d){var a=[];['q','r','e','g'].forEach(function(k){var L=TP[k],o={q:0,r:3,e:5,g:2}[k];a.push(L[(d+o)%L.length])});return a.join(', ')}
+function rc(d,L){var s=[];L.forEach(function(x){if(d-x[0]>=1)s.push(x[1]+' ('+x[2]+'): '+nm(d-x[0]))});return s}
+var MT=[['IBPS (official)','https://www.ibps.in','Notification, syllabus aur pattern ka asli source'],['Adda247 / BankersAdda','https://www.bankersadda.com','Cut-off, exam analysis, daily current affairs'],['Oliveboard','https://www.oliveboard.in','Cut-off analysis, mocks aur strategy blogs'],['Mahendras','https://www.mahendras.org','Study plan aur topper-style strategy guides'],['Testbook','https://testbook.com','Practice sets, daily quiz, mock tests'],['Physics Wallah (Banking)','https://www.pw.live/banking','Mains/Prelims strategy aur free classes']];
+function addD(){var t=document.getElementById('dt').value.trim();if(!t)return;S.dbt.push(t);save();show()}
+function dl(i){S.dbt.splice(i,1);save();show()}
+function mentor(){
+ var h='<div class="card"><h2>Mentors se kaise judein</h2><div class="sub">Is chat mein main aapka AI mentor hoon: doubt, mock analysis, strategy sab pooch sakte ho. Asli educators aur toppers ke liye neeche ke platforms ke free YouTube channels, Telegram groups aur live doubt sessions follow karo. App ke andar kisi insaan se seedhi chat nahi ho sakti.</div></div><div class="card"><h2>Best platforms</h2>';
+ MT.forEach(function(m){h+='<div class="row"><span><a href="'+m[1]+'" target="_blank" rel="noopener"><b>'+m[0]+'</b></a><br><small class="sub">'+m[2]+'</small></span></div>'});
+ h+='</div><div class="card"><h2>Doubt list</h2><div class="sub">Doubt yahan likho, phir mujhse ya mentor se poochho. Solve hone par hata do.</div><input id="dt" type="text" placeholder="Jaise: Boats and Streams ka upstream shortcut"><button class="btn" onclick="addD()">Doubt add karo</button>';
+ S.dbt.forEach(function(t,i){h+='<div class="row"><span>'+esc(t)+'</span><button onclick="dl('+i+')" style="background:var(--ok);color:#fff;border:0;border-radius:8px;padding:5px 10px">Solve</button></div>'});
+ h+='</div>';v.innerHTML=h;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var IV=[1,3,7,21];
+function iso(o){return o.getFullYear()+'-'+('0'+(o.getMonth()+1)).slice(-2)+'-'+('0'+o.getDate()).slice(-2)}
+function due(){var t=iso(new Date());return S.errs.filter(function(e){var a=new Date(e.d+'T00:00:00');a.setDate(a.getDate()+IV[e.s]);return iso(a)<=t})}
+function addM(){var el=document.getElementById('ms');if(el.value===''){msg('Score likho');return}S.mocks.push({d:iso(new Date()),k:document.getElementById('mk').value,s:+el.value,x:+document.getElementById('mx').value||100,a:+document.getElementById('ma').value||0,c:+document.getElementById('mc').value||0,z:+document.getElementById('mz').value||0,t:+document.getElementById('mt').value||0,g:+document.getElementById('mg').value||0});save();show()}
+function addE(){var t=document.getElementById('et').value.trim();if(!t)return;S.errs.push({t:t,d:iso(new Date()),s:0});save();show()}
+function rv(i){var e=S.errs[i];e.s++;e.d=iso(new Date());if(e.s>=IV.length)S.errs.splice(i,1);save();show()}
+function logTab(){
+ var d=Math.min(TOT,Math.max(1,dayNo())),tg=d<60?0:d<=90?45:d<=150?60:70;
+ var pm=S.mocks.filter(function(m){return m.k=='Prelims'}).slice(-3);
+ var h='<div class="card"><h2>Mock score log</h2>';
+ if(pm.length&&tg){var av=pm.reduce(function(a,m){return a+m.s*100/m.x},0)/pm.length;h+='<div class="sub">Last '+pm.length+' Prelims avg: <b>'+av.toFixed(1)+'</b> / target '+tg+' &rarr; '+(av>=tg?'Track par ho. Accuracy maintain karo.':'Peeche ho. Weak subject ko 2 hafte extra time do. Attempts kam, accuracy 85%+ rakho.')+'</div>'}
+ h+='<select id="mk"><option>Prelims</option><option>Mains</option><option>Sectional</option></select><input id="ms" type="number" placeholder="Score"><input id="mx" type="number" placeholder="Max marks (default 100)"><input id="ma" type="number" placeholder="Accuracy % (optional)"><div class="sub">Galat sawal kitne, wajah ke hisaab se (optional):</div><input id="mc" type="number" placeholder="Concept gap"><input id="mz" type="number" placeholder="Silly mistake"><input id="mt" type="number" placeholder="Time pressure"><input id="mg" type="number" placeholder="Guess"><button class="btn" onclick="addM()">Mock add karo</button>';
+ S.mocks.slice(-8).reverse().forEach(function(m){var p=Math.round(m.s*100/m.x);h+='<div class="row"><span>'+m.d+' '+m.k+'</span><span>'+m.s+'/'+m.x+(m.a?' ('+m.a+'%)':'')+'</span></div><div class="bar"><i style="width:'+Math.min(100,p)+'%"></i></div>'});
+ h+='</div>'+anal()+'<div class="card"><h2>Error notebook (spaced revision)</h2><div class="sub">Galat sawal ya concept likho. App 1, 3, 7 aur 21 din baad dobara revise karwayega.</div><input id="et" type="text" placeholder="Jaise: Pipes and Cistern formula galat laga"><button class="btn" onclick="addE()">Add karo</button>';
+ var dd=due();h+='<div class="sub" style="margin-top:8px">Aaj revise karne hain: <b>'+dd.length+'</b> / total '+S.errs.length+'</div>';
+ dd.forEach(function(e){h+='<div class="row"><span>'+esc(e.t)+'</span><button onclick="rv('+S.errs.indexOf(e)+')" style="background:var(--ok);color:#fff;border:0;border-radius:8px;padding:5px 10px">Ho gaya</button></div>'});
+ h+='</div>';v.innerHTML=h;
+}
+function setup(){
+ var h='<div class="card"><h2>Setup</h2><label>Prep shuru karne ki date</label><input type="date" id="sd" value="'+(S.start||iso(new Date()))+'">';
+ h+='<label>Roz kitne ghante padh sakte ho</label><select id="hr">';
+ [6,7,8,9,10].forEach(function(x){h+='<option value="'+x+'"'+(S.hours==x?' selected':'')+'>'+x+' ghante'+(x==8?' (recommended)':'')+'</option>'});
+ h+='</select><label>Weak subjects (inko extra time milega)</label><div class="chips">';
+ ['q','r','e','g','c'].forEach(function(k){h+='<label><input type="checkbox" class="wk" value="'+k+'"'+(S.weak.indexOf(k)>=0?' checked':'')+'>'+NM[k]+'</label>'});
+ h+='</div><label>Meri wajah (jab man na kare, tab ye dikhega)</label><input type="text" id="why" value="'+esc(S.why||'')+'" placeholder="Jaise: Maa-papa ke liye, financial freedom"><button class="btn" onclick="sv()">Plan banao</button>';
+ h+='<div class="sub" style="margin-top:12px">Note: Progress sirf is device ke browser mein save hota hai.</div></div>';
+ v.innerHTML=h;
+}
+function sv(){
+ var s=document.getElementById('sd').value;
+ if(!s){msg('Pehle start date chuno');return}
+ S.why=document.getElementById('why').value.trim();S.start=s;S.hours=+document.getElementById('hr').value;
+ S.weak=[].slice.call(document.querySelectorAll('.wk')).filter(function(c){return c.checked}).map(function(c){return c.value});
+ save();VD=cur();tab=0;show();
+}
+for(var i=0;i<6;i++)(function(i){document.getElementById('t'+i).onclick=function(){tab=i;show()}})(i);
+if(S.start)VD=cur();
+show();
+</script>
+</body>
+</html>
