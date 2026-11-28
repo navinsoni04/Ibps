@@ -15,6 +15,7 @@ h1{font-size:19px;margin:4px 0 2px}h2{font-size:16px;margin:0 0 8px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .tabs button{flex:1 1 13%;min-width:70px;padding:9px 2px;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600}
 .tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.motivation-link{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--rc);color:var(--ac);font-weight:650;text-decoration:none}.motivation-link:hover{text-decoration:underline}
 label{display:block;font-size:13px;color:var(--mu);margin:8px 0 3px}
 input,select,button{font:inherit}
 input[type=date],input[type=number],input[type=text],select{width:100%;margin-bottom:6px;padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
@@ -46,9 +47,11 @@ details summary{font-weight:600;cursor:pointer;padding:4px 0}
 <h1>IBPS PO 8-Month Planner</h1>
 <div class="sub">Official IBPS PO syllabus + PYQ difficulty ke hisaab se 240 din ka plan. Har topic 25 baar recall + revise, PYQ papers aur mock schedule ke saath.</div>
 <div class="tabs"><button id="t0" class="on">Aaj</button><button id="t1">Plan</button><button id="t6">Syllabus</button><button id="t2">Progress</button><button id="t4">Log</button><button id="t5">Mentor</button><button id="t3">Setup</button></div>
+<a class="motivation-link" href="/motivation/">✦ Motivation Shelf <span aria-hidden="true">→</span></a>
 <div id="toast"></div><div id="v"></div>
 
 <script>
+if(/^#(?:confirmation_token|recovery_token)=/.test(location.hash)) location.replace('/motivation/'+location.hash);
 var TOT=240;
 var S={start:'',hours:8,weak:[],done:{},mocks:[],errs:[],dbt:[]};
 try{var x=localStorage.getItem('ibpsplan');if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
