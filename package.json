@@ -1,0 +1,22 @@
+{
+  "name": "ibps-study-planner",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "prepare:site": "mkdir -p dist && cp -R public/. dist/ && cp index.html 'IBPS PO 8-Month Planner.html' 'IBPS PO 8-Month Planner.md' dist/ && esbuild src/motivation.js --bundle --minify --outfile=dist/motivation/app.js"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.12",
+    "@netlify/database": "^2.0.4",
+    "@netlify/identity": "^2.0.1",
+    "@netlify/server": "^0.1.6",
+    "drizzle-orm": "^1.0.0-beta.22"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^1.0.0-beta.22",
+    "esbuild": "^0.28.2"
+  }
+}

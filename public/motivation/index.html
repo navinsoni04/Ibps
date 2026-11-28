@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f5eb">
+  <title>Motivation Shelf · Smart Study</title>
+  <link rel="stylesheet" href="/motivation/style.css">
+  <script type="module" src="/motivation/app.js"></script>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="back" href="/"><span aria-hidden="true">←</span> Back to planner</a>
+    <span class="masthead">SMART STUDY <span aria-hidden="true">✦</span></span>
+    <button class="quiet" id="logout" type="button" hidden>Sign out</button>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span aria-hidden="true">✷</span> THE STUDY RESET</p>
+        <h1 id="page-title">Motivation<br><em>Shelf.</em></h1>
+        <p class="hero-description" lang="hi-Latn">Padhai ke beech ek chhota sa break. Apni favourite affirmations, songs aur inspirational videos yahan save karo.</p>
+      </div>
+      <figure class="landscape">
+        <svg viewBox="0 0 420 330" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <clipPath id="window"><path d="M40 294V178a170 147 0 0 1 340 0v116Z"/></clipPath>
+            <pattern id="grid" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0H0v14" fill="none" stroke="#fbefcb" stroke-opacity=".17"/></pattern>
+          </defs>
+          <path d="M30 301V178a180 158 0 0 1 360 0v123Z" fill="none" stroke="#afbea1" stroke-opacity=".5"/>
+          <g clip-path="url(#window)">
+            <path fill="#c9d0a9" d="M40 26h340v270H40z"/>
+            <path fill="url(#grid)" d="M40 26h340v270H40z"/>
+            <circle cx="242" cy="130" r="66" fill="#f4b86b"/>
+            <path d="M40 217 132 146l72 63 64-35 112 67v56H40z" fill="#94a47d"/>
+            <path d="m40 236 102-63 82 70 69-49 87 57v46H40z" fill="#5c795d"/>
+            <path d="M40 262 132 223l77 39 74-22 97 39v18H40z" fill="#3f634f"/>
+            <path d="M40 279c52-24 96-20 142-9s82 20 198-12v39H40z" fill="#254d3e"/>
+            <path d="M40 276c52-24 96-20 142-9s82 20 198-12m-340 29c52-24 96-20 142-9s82 20 198-12m-340 29c52-24 96-20 142-9s82 20 198-12" fill="none" stroke="#deead0" stroke-opacity=".34"/>
+          </g>
+          <path d="M99 104v25m-12-12h24m223-39v15m-8-8h16M54 159v11m-5-5h10m298-15v13m-6-6h12" stroke="#ffffe5" stroke-linecap="round"/>
+          <path d="M101 165h24m-16 6h24m155-62h29m-17 6h18" stroke="#5f755d" stroke-opacity=".55" stroke-linecap="round"/>
+        </svg>
+        <figcaption>“Small steps still count.”</figcaption>
+      </figure>
+    </section>
+
+    <section class="account panel" id="account" aria-labelledby="auth-title">
+      <div>
+        <p class="eyebrow"><span aria-hidden="true">◇</span> YOUR PRIVATE COLLECTION</p>
+        <h2 id="auth-title">Make this shelf yours.</h2>
+        <p id="auth-description" lang="hi-Latn">Sign in karo aur apni shelf kisi bhi device par kholo. Jo save karoge, woh sirf tumhe dikhega.</p>
+      </div>
+      <form id="auth-form" hidden>
+        <label id="email-row">Email address <input id="email" type="email" autocomplete="email" required></label>
+        <label id="password-row">Password <input id="password" type="password" autocomplete="current-password" required></label>
+        <p class="message" id="auth-message" role="status"></p>
+        <button class="primary" id="auth-submit" type="submit">Sign in</button>
+        <div class="auth-actions">
+          <button class="text-button" id="auth-alternate" type="button">Create an account</button>
+          <button class="text-button" id="auth-recover" type="button">Forgot password?</button>
+        </div>
+      </form>
+      <p class="message" id="session-status" role="status">Checking your session…</p>
+      <noscript><p>Enable JavaScript to use your private shelf.</p></noscript>
+    </section>
+
+    <section class="library" id="library" aria-labelledby="library-title" hidden>
+      <div class="library-header">
+        <div><p class="eyebrow"><span aria-hidden="true">◇</span> YOUR PRIVATE COLLECTION</p><h2 id="library-title">On your shelf</h2></div>
+        <button class="primary" id="add" type="button"><span aria-hidden="true">＋</span> Add to shelf</button>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Filter shelf">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="affirmation" aria-pressed="false">Affirmations</button>
+        <button type="button" data-filter="song" aria-pressed="false">Songs</button>
+        <button type="button" data-filter="video" aria-pressed="false">Videos</button>
+      </div>
+      <p class="message" id="library-status" role="status"></p>
+      <button class="text-button" id="retry" type="button" hidden>Try again</button>
+      <div class="items" id="items"></div>
+    </section>
+
+    <footer>Take the break. Then take the next step. <span aria-hidden="true">✦</span></footer>
+  </main>
+
+  <dialog id="editor" aria-labelledby="editor-title">
+    <form id="item-form">
+      <div class="dialog-header">
+        <div><p class="eyebrow">MAKE IT PERSONAL</p><h2 id="editor-title">Add to shelf</h2></div>
+        <button class="icon-button" id="close-editor" type="button" aria-label="Close">×</button>
+      </div>
+      <label>Category
+        <select id="category" name="category">
+          <option value="affirmation">Positive affirmation</option>
+          <option value="song">Song</option>
+          <option value="video">Inspirational video</option>
+        </select>
+      </label>
+      <label>Title <input name="title" maxlength="100" placeholder="Something easy to remember" required></label>
+      <label id="text-row">Affirmation <textarea id="affirmation" rows="3" maxlength="1000" placeholder="I can take it one step at a time."></textarea></label>
+      <label id="source-row" hidden>Save as
+        <select id="source" name="source">
+          <option value="file">Upload a file</option>
+          <option value="link">Save a link</option>
+        </select>
+      </label>
+      <label id="link-row" hidden>HTTPS link <input id="link" type="url" maxlength="2000" placeholder="https://…"></label>
+      <label id="file-row" hidden>Choose file <input id="file" type="file" aria-describedby="file-help"><small id="file-help"></small></label>
+      <p class="message" id="item-message" role="status"></p>
+      <button class="primary" id="save-item" type="submit">Save to shelf</button>
+    </form>
+  </dialog>
+</body>
+</html>
