@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="hi-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f0e7">
+  <title>Current Affairs Desk · Smart Study</title>
+  <link rel="stylesheet" href="/study-desk/style.css">
+</head>
+<body class="affairs">
+  <div class="shell">
+    <header class="masthead">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">S</span> Smart Study</a>
+      <nav aria-label="Study tools">
+        <a href="/">Planner</a>
+        <a href="/vocab/">Vocab Lab</a>
+        <a href="/current-affairs/" aria-current="page">Current Affairs</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span>02</span> GA / Banking practice desk</p>
+          <h1 id="page-title">Current <em>Affairs.</em></h1>
+          <p>Headline ratto mat. Exam wala fact nikalo, source check karo, phir bina dekhe quiz lagao.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 240 144" width="240" height="144" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 115h228M6 50h228M58 6v132m122-132v132" stroke="currentColor" opacity=".33" stroke-dasharray="3 5"/>
+            <path d="m64 34 121-15 13 97-121 15z" stroke="currentColor" opacity=".7"/>
+            <path d="m49 25 126 10-7 93-126-10z" fill="var(--hero)" stroke="currentColor"/>
+            <path d="m61 42 100 8m-100 0 100 8m-103 37 43 3m-44 4 43 3m7-31 51 4m-52 4 51 4m-52 4 51 4m-52 4 51 4m-52 4 51 4" stroke="currentColor" stroke-width="2"/>
+            <path d="m58 59 44 4-2 26-44-4z" fill="currentColor"/>
+            <path d="M206 30h20m-10-10v20M19 103l4 4-4 4-4-4z" stroke="currentColor"/>
+          </svg>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <section class="panel" aria-labelledby="briefs-title">
+          <header class="panel-head">
+            <div><p class="eyebrow">Starter edition · static revision</p><h2 id="briefs-title">Exam briefs</h2></div>
+          </header>
+          <div class="brief-section">
+            <p class="muted">Yeh curated practice set hai, live feed nahi. Nayi updates ke liye source desk kholo.</p>
+            <div class="filters" id="brief-filters" role="group" aria-label="Filter news by topic">
+              <button type="button" aria-pressed="true" data-filter="all">Sab</button>
+              <button type="button" aria-pressed="false" data-filter="Banking">Banking</button>
+              <button type="button" aria-pressed="false" data-filter="Economy">Economy</button>
+              <button type="button" aria-pressed="false" data-filter="Schemes">Schemes</button>
+              <button type="button" aria-pressed="false" data-filter="Sports">Sports</button>
+            </div>
+            <p class="sr-only" id="brief-count" role="status"></p>
+            <div id="brief-list"></div>
+            <noscript><p>Exam briefs aur quiz ke liye JavaScript on karo.</p></noscript>
+          </div>
+        </section>
+
+        <div class="side-stack">
+          <section class="panel quiz" aria-labelledby="quiz-title">
+            <header class="panel-head"><div><p class="eyebrow">Bina notes</p><h2 id="quiz-title">Recall quiz</h2></div></header>
+            <div class="drill" id="quiz-intro" hidden>
+              <p>Starter edition se 5 MCQs. Har jawab ke baad explanation milega.</p>
+              <button class="button primary" type="button" id="start-quiz">Quiz shuru karo <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="drill" id="quiz-round" hidden>
+              <div class="drill-meta"><span id="quiz-position"></span><span id="quiz-topic"></span></div>
+              <progress id="quiz-progress" max="5" value="0" aria-label="Questions answered"></progress>
+              <h3 class="question" id="quiz-question" tabindex="-1"></h3>
+              <div class="answers" id="quiz-options" role="group" aria-labelledby="quiz-question"></div>
+              <p class="quiz-feedback" id="quiz-feedback" role="status"></p>
+              <button class="button primary" id="next-question" type="button" hidden>Agla sawaal <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="drill" id="quiz-result" hidden>
+              <p class="eyebrow">Round complete</p>
+              <h3 class="result-title" id="quiz-score" tabindex="-1"></h3>
+              <p id="quiz-recap"></p>
+              <div class="actions">
+                <button class="button primary" id="review-quiz" type="button">Galat sawaal dobara</button>
+                <button class="button secondary" id="restart-quiz" type="button">Poora quiz dobara</button>
+              </div>
+            </div>
+          </section>
+
+          <aside class="panel field-notes" aria-labelledby="sources-title">
+            <p class="eyebrow">Source desk</p>
+            <h2 id="sources-title">Nayi khabar kahan?</h2>
+            <a class="source-row" href="https://rbi.org.in/scripts/BS_PressReleaseDisplay.aspx" target="_blank" rel="noopener noreferrer"><span>RBI press releases <small>Banking &amp; policy</small></span><span aria-hidden="true">↗</span></a>
+            <a class="source-row" href="https://www.pib.gov.in/AllRelease.aspx?lang=1&amp;reg=3" target="_blank" rel="noopener noreferrer"><span>PIB releases <small>Schemes, ministries &amp; sports</small></span><span aria-hidden="true">↗</span></a>
+            <a class="source-row" href="https://esankhyiki.mospi.gov.in/catalogue-main/catalogue?product=CPI" target="_blank" rel="noopener noreferrer"><span>MoSPI CPI data <small>Inflation &amp; price index</small></span><span aria-hidden="true">↗</span></a>
+          </aside>
+        </div>
+      </div>
+
+      <section class="panel worksheet" aria-labelledby="worksheet-title">
+        <div>
+          <p class="eyebrow">5W note maker</p>
+          <h2 id="worksheet-title">Khabar ko recall slip banao.</h2>
+          <p>Headline ko 5 chhote clues mein todo. Slip copy karke apni notebook mein rakho; yahan draft save nahi hota.</p>
+        </div>
+        <form id="note-form">
+          <div class="note-grid">
+            <label>Who <small>Kisne?</small><input name="who" required maxlength="100" placeholder="Jaise: RBI"></label>
+            <label>What <small>Kya hua?</small><input name="what" required maxlength="160" placeholder="Khabar ka main fact"></label>
+            <label>Where <small>Kahan?</small><input name="where" maxlength="100" placeholder="Jagah ya scope"></label>
+            <label>When <small>Kab?</small><input name="when" maxlength="80" placeholder="Announcement / effective date"></label>
+            <label class="wide">Why <small>Kyun important?</small><input name="why" maxlength="160" placeholder="Exam ka angle ya yaad rakhne wala number"></label>
+          </div>
+          <button class="button primary" type="submit">Revision slip banao</button>
+          <div id="note-slip" hidden>
+            <label for="slip-text">Tumhari revision slip</label>
+            <textarea id="slip-text" rows="5" readonly></textarea>
+            <button class="button secondary" id="copy-note" type="button">Slip copy karo</button>
+          </div>
+          <p id="note-status" role="status"></p>
+        </form>
+      </section>
+    </main>
+    <footer><span>SMART STUDY / IBPS PO</span><a href="/vocab/">Next desk: Vocab Lab <span aria-hidden="true">→</span></a></footer>
+  </div>
+  <script type="module">
+    const rbi = 'https://rbi.org.in/scripts/BS_PressReleaseDisplay.aspx';
+    const pib = 'https://www.pib.gov.in/AllRelease.aspx?lang=1&reg=3';
+    const cpi = 'https://esankhyiki.mospi.gov.in/catalogue-main/catalogue?product=CPI';
+    const briefs = [
+      ['Banking','Repo rate','Policy repo rate ka decision RBI ki Monetary Policy Committee (MPC) leti hai. Nayi policy padhte waqt rate, change aur stance ko alag note karo.',rbi,'Policy repo rate par kaun vote karta hai?',['SEBI board','Monetary Policy Committee','NITI Aayog'],1],
+      ['Economy','Retail inflation','CPI se retail price changes track hote hain. Release se reference month aur year-on-year number alag nikalo.',cpi,'Retail inflation ke liye kaunsa index dekha jaata hai?',['IIP','Sensex','CPI'],2],
+      ['Schemes','Jan Dhan Yojana','PMJDY financial inclusion se juda hai. Kisi scheme ki khabar se ministry, beneficiaries aur benefits nikalo.',pib,'PMJDY ka main focus kya hai?',['Financial inclusion','Road construction','Sports training'],0],
+      ['Sports','Khelo India','Khelo India sports development se juda hai. Event ki khabar se host, edition aur winner alag note karo.',pib,'Khelo India kis field se juda hai?',['Bank regulation','Sports development','Price statistics'],1],
+      ['Banking','CRR','Cash Reserve Ratio mein banks apni prescribed cash reserve RBI ke paas rakhte hain. Policy update mein rate aur effective date dono dekho.',rbi,'Banks CRR cash reserve kiske paas rakhte hain?',['SEBI','IRDAI','RBI'],2],
+    ];
+    const get = id => document.getElementById(id);
+    const text = (id, value) => { get(id).textContent = value; };
+    const listen = (id, action) => get(id).addEventListener('click', action);
+    function element(tag, value, className) {
+      const node = document.createElement(tag);
+      if (value) node.textContent = value;
+      if (className) node.className = className;
+      return node;
+    }
+    function renderBriefs(filter) {
+      const matches = briefs.filter(brief => filter === 'all' || brief[0] === filter);
+      get('brief-list').replaceChildren(...matches.map(([topic, title, summary, source]) => {
+        const card = element('details', '', 'brief');
+        const heading = element('summary');
+        heading.append(element('span', topic, 'brief-meta'), element('strong', title));
+        const body = element('div', '', 'brief-body');
+        const link = element('a', 'Official source desk ↗');
+        link.href = source; link.target = '_blank'; link.rel = 'noopener noreferrer';
+        body.append(element('p', summary), link);
+        card.append(heading, body);
+        return card;
+      }));
+      text('brief-count', `${matches.length} briefs`);
+    }
+    get('brief-filters').addEventListener('click', event => {
+      const active = event.target.closest('[data-filter]');
+      if (!active) return;
+      for (const button of get('brief-filters').querySelectorAll('button')) button.setAttribute('aria-pressed', String(button === active));
+      renderBriefs(active.dataset.filter);
+    });
+    renderBriefs('all');
+
+    let queue, missed, position, answered;
+    function start(items) {
+      queue = items; missed = []; position = 0;
+      get('quiz-intro').hidden = get('quiz-result').hidden = true;
+      get('quiz-round').hidden = false;
+      showQuestion();
+    }
+    function showQuestion() {
+      answered = false;
+      const [topic, , , , question, options, correct] = queue[position];
+      text('quiz-position', `Q ${position + 1} / ${queue.length}`);
+      text('quiz-topic', topic);
+      text('quiz-question', question);
+      text('quiz-feedback', '');
+      get('quiz-progress').max = queue.length;
+      get('quiz-progress').value = position;
+      get('next-question').hidden = true;
+      const buttons = options.map((option, index) => {
+        const button = element('button', option);
+        button.type = 'button';
+        button.addEventListener('click', () => {
+          if (answered) return;
+          answered = true;
+          if (index !== correct) { missed.push(queue[position]); button.classList.add('incorrect'); }
+          buttons[correct].classList.add('correct');
+          buttons.forEach(choice => { choice.setAttribute('aria-disabled', 'true'); choice.tabIndex = -1; });
+          text('quiz-feedback', `${index === correct ? 'Sahi!' : `Sahi jawab: ${options[correct]}.`} ${queue[position][2]}`);
+          get('quiz-progress').value = position + 1;
+          get('next-question').hidden = false;
+          text('next-question', position + 1 === queue.length ? 'Score dekho →' : 'Agla sawaal →');
+        });
+        return button;
+      });
+      get('quiz-options').replaceChildren(...buttons);
+      get('quiz-question').focus();
+    }
+    listen('next-question', () => {
+      if (!answered) return;
+      if (++position < queue.length) { showQuestion(); return; }
+      get('quiz-round').hidden = true;
+      get('quiz-result').hidden = false;
+      text('quiz-score', `${queue.length - missed.length}/${queue.length} sahi`);
+      text('quiz-recap', missed.length ? `Dobara dekho: ${missed.map(brief => brief[1]).join(', ')}.` : 'Sab sahi! Ab source desk se ek nayi khabar uthao.');
+      get('review-quiz').hidden = !missed.length;
+      get('quiz-score').focus();
+    });
+    listen('start-quiz', () => start(briefs));
+    listen('restart-quiz', () => start(briefs));
+    listen('review-quiz', () => start(missed));
+    get('quiz-intro').hidden = false;
+
+    get('note-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const fields = new FormData(event.currentTarget);
+      if (!fields.get('who').trim() || !fields.get('what').trim()) {
+        text('note-status', 'Who aur What mein details likho.');
+        return;
+      }
+      get('slip-text').value = ['Who', 'What', 'Where', 'When', 'Why'].map(label => `${label}: ${fields.get(label.toLowerCase()).trim() || '—'}`).join('\n');
+      get('note-slip').hidden = false;
+      text('note-status', 'Revision slip taiyar hai.');
+    });
+    listen('copy-note', async () => {
+      try {
+        await navigator.clipboard.writeText(get('slip-text').value);
+        text('note-status', 'Slip copy ho gayi.');
+      } catch {
+        get('slip-text').focus();
+        get('slip-text').select();
+        text('note-status', 'Slip select ho gayi. Ise manually copy karo.');
+      }
+    });
+  </script>
+</body>
+</html>

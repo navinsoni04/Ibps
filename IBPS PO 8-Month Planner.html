@@ -15,7 +15,9 @@ h1{font-size:19px;margin:4px 0 2px}h2{font-size:16px;margin:0 0 8px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .tabs button{flex:1 1 13%;min-width:70px;padding:9px 2px;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600}
 .tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-.motivation-link{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--rc);color:var(--ac);font-weight:650;text-decoration:none}.motivation-link:hover{text-decoration:underline}
+.study-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.study-link{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--rc);color:var(--ac);font-weight:650;text-decoration:none}.study-link:hover{text-decoration:underline}
+.study-link:last-child{grid-column:1/-1}.routine-links{display:flex;flex-wrap:wrap;gap:6px 12px;margin:0 0 10px 30px;font-size:13px}.routine-links a{color:var(--ac);font-weight:650}
 label{display:block;font-size:13px;color:var(--mu);margin:8px 0 3px}
 input,select,button{font:inherit}
 input[type=date],input[type=number],input[type=text],select{width:100%;margin-bottom:6px;padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
@@ -47,7 +49,11 @@ details summary{font-weight:600;cursor:pointer;padding:4px 0}
 <h1>IBPS PO 8-Month Planner</h1>
 <div class="sub">Official IBPS PO syllabus + PYQ difficulty ke hisaab se 240 din ka plan. Har topic 25 baar recall + revise, PYQ papers aur mock schedule ke saath.</div>
 <div class="tabs"><button id="t0" class="on">Aaj</button><button id="t1">Plan</button><button id="t6">Syllabus</button><button id="t2">Progress</button><button id="t4">Log</button><button id="t5">Mentor</button><button id="t3">Setup</button></div>
-<a class="motivation-link" href="/motivation/">✦ Motivation Shelf <span aria-hidden="true">→</span></a>
+<nav class="study-links" aria-label="Study tools">
+ <a class="study-link" href="/vocab/">Vocab Lab <span aria-hidden="true">→</span></a>
+ <a class="study-link" href="/current-affairs/">Current Affairs <span aria-hidden="true">→</span></a>
+ <a class="study-link" href="/motivation/">✦ Motivation Shelf <span aria-hidden="true">→</span></a>
+</nav>
 <div id="toast"></div><div id="v"></div>
 
 <script>
@@ -57,6 +63,9 @@ var S={start:'',hours:8,weak:[],done:{},mocks:[],errs:[],dbt:[]};
 try{var x=localStorage.getItem('ibpsplan');if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
 function save(){try{localStorage.setItem('ibpsplan',JSON.stringify(S))}catch(e){}}
 var NM={q:'Quant',r:'Reasoning',e:'English',g:'GA / Banking',c:'Calculation'};
+var ENGLISH_DAILY='Editorial ya Nimisha Bansal Ma’am ki Perfection Class — dono mein se ek compulsory.';
+var ENGLISH_ROUTINE='Editorial: main idea, tone aur 5 words nikalo. Perfection Class: lesson ke sawal khud attempt karo aur 1 galti note karo.';
+var ENGLISH_LINKS='<a href="https://indianexpress.com/section/opinion/editorials/" target="_blank" rel="noopener noreferrer">Editorial ↗</a><a href="https://www.youtube.com/watch?v=LtWxZKzI65s" target="_blank" rel="noopener noreferrer">Perfection Class ↗</a><a href="https://www.youtube.com/channel/UCnRI8GekLC4QPbbJfcuxwlQ/search?query=Perfection%20Class" target="_blank" rel="noopener noreferrer">Aur classes ↗</a><a href="/vocab/">Vocab Lab →</a>';
 var CALC=['Tables 2-30 + squares to 30','Cubes to 20 + square roots','Fractions to percent (1/2 to 1/20)','Multiplication tricks (2-digit x 2-digit)','Approximation drill: 15 Qs in 8 min','Simplification speed: 20 Qs in 10 min','Percent and ratio shortcuts'];
 var SPL=[{q:.30,r:.25,e:.18,g:.15,c:.12},{q:.30,r:.26,e:.15,g:.15,c:.14},{q:.30,r:.28,e:.15,g:.12,c:.15},{q:.28,r:.28,e:.14,g:.15,c:.15},{q:.28,r:.27,e:.15,g:.15,c:.15}];
 var PH=[{n:'Phase 1: Foundation',a:1,b:90,d:'Official syllabus ka har topic: concept, 30 Qs practice aur us topic ke PYQs. Mushkil aur zyada pooche jaane wale topics ko zyada din.'},
@@ -238,6 +247,7 @@ function plan(d){
    if(k=='g')tx='Daily Current Affairs + '+tx;
    if(k=='e'&&(p==3||p==4)&&w%2==1)tx='Descriptive writing practice (Letter + Essay) + '+t.n;
   }
+  if(k=='e'){info+=' <br>'+ENGLISH_DAILY+' '+ENGLISH_ROUTINE+' Chuna hua route aur upar ki practice dono ke baad tick karo.'}
   out.push({id:k,s:NM[k],t:tx,x:m+' min'+info,m:m,rc:k=='c'?{h:CALC[ci],p:CN[ci]}:{h:t.n,p:rnOf(t)}});
  });
  if(p==4)out.push({id:'i',s:'INTERVIEW',t:'Interview prep: self-intro, banking basics, current affairs',x:'30 min',m:30,rc:{h:'Interview',p:GN.i}});
@@ -271,7 +281,12 @@ function today(){
  h+='<div class="card"><span class="pill">'+P.n+'</span> <span class="pill">'+S.hours+' hrs target</span><div class="sub" style="margin:6px 0 0">'+P.d+'</div></div>';
  h+=motCard(d);var du=due().length;if(du)h+='<div class="card" style="border-color:var(--mk)"><b>'+du+' galat sawal aaj revise karne hain</b> <small class="sub">(Log tab &rarr; Error notebook)</small></div>';
  h+='<div class="card"><h2>Aaj ka target ('+dn+'/'+pl.length+')</h2>';
- pl.forEach(function(t){h+='<label class="task'+(S.done[d+t.id]?' done':'')+'" style="color:var(--tx);margin:0;display:flex"><input type="checkbox" '+(S.done[d+t.id]?'checked':'')+' onchange="toggle('+d+',\''+t.id+'\')"><span class="t"><b>'+(t.id=='m'?'<span class="pill mock">MOCK</span> ':'<span class="pill">'+t.s+'</span> ')+t.t+'</b><small>'+t.x+'</small></span></label>'+rcBox(t)});
+ pl.forEach(function(t){
+  h+='<label class="task'+(S.done[d+t.id]?' done':'')+'" style="color:var(--tx);margin:0;display:flex"><input type="checkbox" '+(S.done[d+t.id]?'checked':'')+' onchange="toggle('+d+',\''+t.id+'\')"><span class="t"><b>'+(t.id=='m'?'<span class="pill mock">MOCK</span> ':'<span class="pill">'+t.s+'</span> ')+t.t+'</b><small>'+t.x+'</small></span></label>';
+  if(t.id=='e')h+='<div class="routine-links">'+ENGLISH_LINKS+'</div>';
+  if(t.id=='g')h+='<div class="routine-links"><a href="/current-affairs/">Current Affairs Desk →</a></div>';
+  h+=rcBox(t);
+ });
  h+='</div>';
  h+=(dayComplete(d)?'<button class="btn" onclick="nx()">'+(d>=TOT?'Plan poora! Shabaash!':'Din '+d+' poora! Agle din par jao')+'</button>':'<div class="card" style="border-color:var(--mk)"><b>Agla din LOCKED hai.</b> Aaj ke '+(pl.length-dn)+' tasks baaki hain. Jab tak ye poore nahi hote, aage nahi badh sakte.</div>');
  var lag=dayNo()-cur();if(lag>0)h+='<div class="sub">Calendar se '+lag+' din peeche ho. Roz thoda extra karke catch-up karo.</div>';
@@ -279,7 +294,7 @@ function today(){
  v.innerHTML=h;
 }
 function planTab(){
- var h='';
+ var h='<div class="card"><h2>Roz ka compulsory English block</h2><p>'+ENGLISH_DAILY+'</p><div class="sub">'+ENGLISH_ROUTINE+' Iske saath us din ka English topic bhi practice karo.</div><div class="routine-links" style="margin-left:0">'+ENGLISH_LINKS+'</div></div>';
  PH.forEach(function(p,i){
   h+='<div class="card"><h2>'+p.n+'</h2><div class="sub">Din '+p.a+'-'+p.b+' ('+fmt(dt(p.a))+' se '+fmt(dt(p.b))+')<br>'+p.d+'</div>';
   var ms=[];for(var d=p.a;d<=p.b;d++){var m=mockFor(d);if(m&&m.m)ms.push([d,m.t])}
